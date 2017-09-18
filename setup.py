@@ -9,8 +9,14 @@ setup(
     url="https://snd.al",
     license="LGPL",
 
-    setup_requires=['setuptools-markdown'],
+    setup_requires=[
+        'setuptools-markdown',
+    ],
     long_description_markdown_filename='README.md',
+
+    install_requires=[
+        'midi',
+    ],
 
     packages=find_packages(),
 )
