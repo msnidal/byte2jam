@@ -5,6 +5,8 @@ setup(
     version="0.1",
     description="Musical sequence byte encoder",
     author="Mark Snidal",
+    author_email="mark.snidal@gmail.com",
+    url="https://snd.al",
     license="LGPL",
 
     setup_requires=['setuptools-markdown'],
