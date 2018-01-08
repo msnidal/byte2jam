@@ -17,3 +17,12 @@ def get_note_events(note, start_delay):
     note_end = midi.NoteOffEvent(tick=tick_value, pitch=note.pitch)
 
     return note_start, note_end
+
+def get_nibble_note_data(nibble, initial_note, mode):
+    """ Get a note data in the sequence from a nibble (half-byte) """
+
+    relative_position = nibble >> 1
+    is_half_note = nibble & 1
+    pitch = map_note(initial_note, mode, relative_position)
+
+    return pitch, is_half_note

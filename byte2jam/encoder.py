@@ -1,16 +1,7 @@
 import midi
 from schema import Note, ByteJamSchema
-from utils import map_note
+from utils import map_note, get_nibble_note_data
 from constants import *
-
-def get_nibble_note(nibble, initial_note, mode):
-    """ Get a note in the sequence from a nibble (half-byte) """
-
-    relative_position = nibble >> 1
-    is_half_note = nibble & 1
-    pitch = map_note(initial_note, mode, relative_position)
-
-    return Note(pitch, is_half_note)
 
 def encode(values):
     """
@@ -31,14 +22,13 @@ def encode(values):
     # get note data from each succeeding byte
     for byte in values[1:]:
         content_notes.extend([
-            get_nibble_note(byte >> 4, initial_note, mode),
-            get_nibble_note(byte & 15, initial_note, mode)
+            Note(*get_nibble_note_data(byte >> 4, initial_note, mode)),
+            Note(*get_nibble_note_data(byte & 15, initial_note, mode))
             ])
 
     # create note schema from extracted byte data
     schema = ByteJamSchema(initial_note, mode, seq_index, content_notes)
     return schema.get_midi_pattern()
-    # midi.write_midifile("output.mid", pattern)
 
 def decode(pattern):
     """ Decodes values from a well formed MIDI pattern. Returns a bytearray bit string. """
