@@ -23,10 +23,13 @@ class ByteJamSchema:
         header = (self.initial_note << 5) | (self.mode << 2) | self.sequence
         li.append(header)
 
-        for byte_index in xrange((len(self.content_notes) // 2) + (len(self.content_notes) % 2)):
-            byte = (self.content_notes[2*byte_index].modal_position(scale) << 5) | (self.content_notes[2*byte_index].is_half_note << 4)
-            if len(self.content_notes) > (2*byte_index + 1):
-                byte |= ((self.content_notes[2*byte_index + 1].modal_position(scale) << 1) | (self.content_notes[2*byte_index + 1].is_half_note))
+        number_of_bytes = (len(self.content_notes) // 2) + (len(self.content_notes) % 2)
+        for byte_index in xrange(number_of_bytes):
+            byte = (self.content_notes[2 * byte_index].modal_position(scale) << 5) | \
+                    (self.content_notes[2 * byte_index].is_half_note << 4)
+            if len(self.content_notes) > (2 * byte_index + 1):
+                byte |= ((self.content_notes[2 * byte_index + 1].modal_position(scale) << 1) | \
+                        (self.content_notes[2 * byte_index + 1].is_half_note))
 
             li.append(byte)
 
@@ -42,20 +45,20 @@ class ByteJamSchema:
         note_events = []
 
         # insert intro pad sequence from seq_index
-        note_events.append(get_note_events(Note(map_note(self.initial_note, self.mode, INTRO_SEQUENCE[self.sequence][0]), False), 0))
-        note_events.append(get_note_events(Note(map_note(self.initial_note, self.mode, INTRO_SEQUENCE[self.sequence][1]), True), 0))
-        note_events.append(get_note_events(Note(map_note(self.initial_note, self.mode, INTRO_SEQUENCE[self.sequence][2]), True), 0))
-        note_events.append(get_note_events(Note(map_note(self.initial_note, self.mode, INTRO_SEQUENCE[self.sequence][3]), False), 0))
+        for sequence_index in xrange(4):
+            intro_note = Note(map_note(self.initial_note, self.mode,
+                INTRO_SEQUENCE[self.sequence][sequence_index]), False)
+            note_events.append(get_note_events(intro_note, 0))
 
         # populate content
         for note in self.content_notes:
             note_events.append(get_note_events(note, 0))
 
         # insert terminal pad sequence from seq_index
-        note_events.append(get_note_events(Note(map_note(self.initial_note, self.mode, TERMINAL_SEQUENCE[self.sequence][0]), False), 0))
-        note_events.append(get_note_events(Note(map_note(self.initial_note, self.mode, TERMINAL_SEQUENCE[self.sequence][1]), True), 0))
-        note_events.append(get_note_events(Note(map_note(self.initial_note, self.mode, TERMINAL_SEQUENCE[self.sequence][2]), True), 0))
-        note_events.append(get_note_events(Note(map_note(self.initial_note, self.mode, TERMINAL_SEQUENCE[self.sequence][3]), False), 0))
+        for sequence_index in xrange(4):
+            outro_note = Note(map_note(self.initial_note, self.mode,
+                TERMINAL_SEQUENCE[self.sequence][sequence_index]), False)
+            note_events.append(get_note_events(outro_note, 0))
 
         # append everything in note_events
         for on, off in note_events:
