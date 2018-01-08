@@ -15,7 +15,7 @@ setup(
     long_description_markdown_filename='README.md',
 
     install_requires=[
-        'midi',
+        'python3-midi',
     ],
 
     packages=find_packages(),

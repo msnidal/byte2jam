@@ -6,7 +6,7 @@ string into a machine-readable image format, byte2jam encodes a byte string
 into a so-called "byte jam" - a unique, musically consistent and ear-pleasing
 sequence of notes that can be read back into its original byte string. 
 
-byte2jam is written in Python 3 and supports encoding any Python type that can
+byte2jam is written in Python 2 and supports encoding any Python type that can
 be read as a bytearray (near everything,) storing data in a schema class with
 MIDI export/import and more to come.
 
@@ -18,7 +18,7 @@ how to deploy the project on a live system.
 
 ### Prerequisites
 
-For now, all you need to run byte2jam is a working Python 3 installation. This
+For now, all you need to run byte2jam is a working Python 2 installation. This
 project is packaged via setuptools and is intended to be hosted on pip once some
 more core features are ironed out.
 
@@ -39,7 +39,7 @@ python setup.py install
 
 ## Built With
 
-* [Python 3](https://www.python.org/) - Don't know what I'd do without it :')
+* [Python 2](https://www.python.org/) - Don't know what I'd do without it :')
 * [python-midi](https://pypi.python.org/pypi/midi) - Used to export and import MIDI files
 
 ## Authors
