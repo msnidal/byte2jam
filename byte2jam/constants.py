@@ -2,7 +2,7 @@ from midi import *
 
 # note lengths, velocity according to midi library
 HALF_NOTE_LENGTH = 100
-FULL_NOTE_LENGTH = HALF_NOTE_LENGTH*2
+FULL_NOTE_LENGTH = HALF_NOTE_LENGTH * 2
 NOTE_VELOCITY = 20
 
 # sequence sets in powers of 2

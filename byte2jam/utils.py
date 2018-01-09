@@ -13,7 +13,16 @@ def get_note_events(note, start_delay):
     """ Gets a tuple of MIDI events to start and stop playing a note for a pitch """
     note_start = midi.NoteOnEvent(tick=start_delay, velocity=NOTE_VELOCITY, pitch=note.pitch)
 
-    tick_value = FULL_NOTE_LENGTH if note.is_half_note else HALF_NOTE_LENGTH
+    tick_value = HALF_NOTE_LENGTH if note.is_half_note else FULL_NOTE_LENGTH
     note_end = midi.NoteOffEvent(tick=tick_value, pitch=note.pitch)
 
-    return (note_start, note_end)
+    return note_start, note_end
+
+def get_nibble_note_data(nibble, initial_note, mode):
+    """ Get a note data in the sequence from a nibble (half-byte) """
+
+    relative_position = nibble >> 1
+    is_half_note = nibble & 1
+    pitch = map_note(initial_note, mode, relative_position)
+
+    return pitch, is_half_note
