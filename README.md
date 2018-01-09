@@ -1,5 +1,7 @@
 # byte2jam
 
+[![Build Status](https://travis-ci.org/msnidal/byte2jam.svg?branch=master)](https://travis-ci.org/msnidal/byte2jam)
+
 byte2jam is a new, human-friendly way of encoding data based around unique,
 memorable musical sequences. In the same sense that a QR code encodes a byte
 string into a machine-readable image format, byte2jam encodes a byte string
