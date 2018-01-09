@@ -3,8 +3,11 @@ from utils import map_note, get_note_events
 from constants import *
 
 class ByteJamSchema:
-    """ This schema decode is intended to be a generalized encoder/decoder from bytearrays to MIDI. While currently functional it can be
-    extended in the future with additional constructors and encoders to handle arbitrary schemas. """
+    """
+    This schema decode is intended to be a generalized encoder/decoder from bytearrays
+    to MIDI. While currently functional it can be extended in the future with additional
+    constructors and encoders to handle arbitrary schemas.
+    """
     initial_note = None
     mode = None
     sequence = None
@@ -17,17 +20,20 @@ class ByteJamSchema:
         self.content_notes = content_notes
 
     def get_bytearray(self, scale):
-        """ Returns a byte string from the schema class, ordered according to the conventions defined in constants.py """
+        """
+        Returns a byte string from the schema class, ordered according to the
+        conventions defined in constants.py
+        """
         li = []
 
         header = (self.initial_note << 5) | (self.mode << 2) | self.sequence
         li.append(header)
 
-        number_of_bytes = (len(self.content_notes) // 2) + (len(self.content_notes) % 2)
+        number_of_bytes = len(self.content_notes) // 2 + len(self.content_notes) % 2
         for byte_index in xrange(number_of_bytes):
             byte = (self.content_notes[2 * byte_index].modal_position(scale) << 5) | \
                     (self.content_notes[2 * byte_index].is_half_note << 4)
-            if len(self.content_notes) > (2 * byte_index + 1):
+            if (2 * byte_index + 1) < len(self.content_notes):
                 byte |= ((self.content_notes[2 * byte_index + 1].modal_position(scale) << 1) | \
                         (self.content_notes[2 * byte_index + 1].is_half_note))
 
@@ -36,7 +42,10 @@ class ByteJamSchema:
         return bytearray(li)
 
     def get_midi_pattern(self):
-        """ Returns a MIDI pattern according to this object's schema. See constants.py for sequences. """
+        """
+        Returns a MIDI pattern according to this object's schema. See constants.py
+        for sequences.
+        """
         # create midi file
         pattern = midi.Pattern()
         track = midi.Track()
@@ -69,8 +78,10 @@ class ByteJamSchema:
         return pattern
 
 class Note:
-    """ This class describes a musical note. It comprises an absolute pitch (in
-    semi-tones) and a length datum. """
+    """
+    This class describes a musical note. It comprises an absolute pitch (in
+    semi-tones) and a length datum.
+    """
     pitch = None
     is_half_note = None
 
