@@ -37,6 +37,14 @@ Or for a system-wide installation:
 python setup.py install
 ```
 
+### Testing
+
+Lastly, you can run the test suite locally:
+
+```
+python setup.py test
+```
+
 ## Built With
 
 * [Python 2](https://www.python.org/) - Don't know what I'd do without it :')
