@@ -43,8 +43,8 @@ def decode(pattern):
 
     # extract schemas from note sequence: mode from scale and intro sequence
     scale = sorted(notes[1:4] + notes[-4:], key=lambda x: x.pitch)
-    mode = map(lambda x: x.get_displacement(initial_note), scale)
-    sequence = map(lambda x: x.modal_position(scale), notes[:4])
+    mode = tuple([x.get_displacement(initial_note) for x in scale])
+    sequence = tuple([x.modal_position(scale) for x in notes[:4]])
 
     mode_index = None
     sequence_index = None
