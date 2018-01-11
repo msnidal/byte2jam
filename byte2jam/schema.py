@@ -1,6 +1,6 @@
 import midi
+import constants
 from utils import map_note, get_note_events
-from constants import *
 
 class ByteJamSchema:
     """
@@ -56,7 +56,7 @@ class ByteJamSchema:
         # insert intro pad sequence from seq_index
         for sequence_index in xrange(4):
             intro_note = Note(map_note(self.initial_note, self.mode,
-                INTRO_SEQUENCE[self.sequence][sequence_index]), False)
+                constants.INTRO_SEQUENCE[self.sequence][sequence_index]), False)
             note_events.append(get_note_events(intro_note, 0))
 
         # populate content
@@ -66,7 +66,7 @@ class ByteJamSchema:
         # insert terminal pad sequence from seq_index
         for sequence_index in xrange(4):
             outro_note = Note(map_note(self.initial_note, self.mode,
-                TERMINAL_SEQUENCE[self.sequence][sequence_index]), False)
+                constants.TERMINAL_SEQUENCE[self.sequence][sequence_index]), False)
             note_events.append(get_note_events(outro_note, 0))
 
         # append everything in note_events
