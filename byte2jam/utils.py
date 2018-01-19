@@ -7,7 +7,7 @@ def map_note(initial_note, mode, relative_position):
     octave = relative_position // 7
     bounded_position = relative_position % 7
 
-    return initial_note + constants.MODES[mode][bounded_position] + 12 * octave
+    return initial_note + mode[bounded_position] + 12 * octave
 
 def get_note_events(note, start_delay):
     """ Gets a tuple of MIDI events to start and stop playing a note for a pitch """

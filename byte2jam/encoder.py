@@ -1,7 +1,7 @@
 import midi
 import constants
 from schema import Note, ByteJamSchema
-from utils import map_note, get_nibble_note_data
+from utils import get_nibble_note_data
 
 def encode(data):
     """
@@ -15,9 +15,12 @@ def encode(data):
         return None
 
     # get header data from first byte of values
-    initial_note = constants.INITIAL_NOTE[(values[0] >> 5)]
-    mode = (values[0] >> 2) & 7
+    initial_note_index = values[0] >> 5
+    modal_index = (values[0] >> 2) & 7
     seq_index = values[0] & 3
+
+    initial_note = constants.INITIAL_NOTE[initial_note_index]
+    mode = constants.MODES[modal_index]
 
     content_notes = []
 
@@ -29,7 +32,7 @@ def encode(data):
             ])
 
     # create note schema from extracted byte data
-    schema = ByteJamSchema(initial_note, mode, seq_index, content_notes)
+    schema = ByteJamSchema(initial_note_index, modal_index, seq_index, content_notes)
     return schema.get_midi_pattern()
 
 def decode(pattern):
@@ -50,11 +53,11 @@ def decode(pattern):
 
     try:
         initial_note_index = constants.INITIAL_NOTE.index(initial_note.pitch)
-        mode_index = constants.MODES.index(mode)
+        modal_index = constants.MODES.index(mode)
         sequence_index = constants.INTRO_SEQUENCE.index(sequence)
     except ValueError:
         # One of the flag criteria do not match the schema layout, invalid sequence
         return None
 
-    schema = ByteJamSchema(initial_note_index, mode_index, sequence_index, notes[4:-4])
+    schema = ByteJamSchema(initial_note_index, modal_index, sequence_index, notes[4:-4])
     return schema.get_bytearray(scale)

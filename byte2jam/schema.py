@@ -8,14 +8,9 @@ class ByteJamSchema:
     to MIDI. While currently functional it can be extended in the future with additional
     constructors and encoders to handle arbitrary schemas.
     """
-    initial_note = None
-    mode = None
-    sequence = None
-    content_notes = []
-
-    def __init__(self, initial_note, mode, sequence, content_notes):
-        self.initial_note = initial_note
-        self.mode = mode
+    def __init__(self, initial_note_index, modal_index, sequence, content_notes):
+        self.initial_note_index = initial_note_index
+        self.modal_index = modal_index
         self.sequence = sequence
         self.content_notes = content_notes
 
@@ -26,7 +21,7 @@ class ByteJamSchema:
         """
         li = []
 
-        header = (self.initial_note << 5) | (self.mode << 2) | self.sequence
+        header = (self.initial_note_index << 5) | (self.modal_index << 2) | self.sequence
         li.append(header)
 
         number_of_bytes = len(self.content_notes) // 2 + len(self.content_notes) % 2
@@ -55,7 +50,9 @@ class ByteJamSchema:
 
         # insert intro pad sequence from seq_index
         for sequence_index in xrange(4):
-            intro_note = Note(map_note(self.initial_note, self.mode,
+            intro_note = Note(map_note(
+                constants.INITIAL_NOTE[self.initial_note_index],
+                constants.MODES[self.modal_index],
                 constants.INTRO_SEQUENCE[self.sequence][sequence_index]), False)
             note_events.append(get_note_events(intro_note, 0))
 
@@ -65,7 +62,9 @@ class ByteJamSchema:
 
         # insert terminal pad sequence from seq_index
         for sequence_index in xrange(4):
-            outro_note = Note(map_note(self.initial_note, self.mode,
+            outro_note = Note(map_note(
+                constants.INITIAL_NOTE[self.initial_note_index],
+                constants.MODES[self.modal_index],
                 constants.TERMINAL_SEQUENCE[self.sequence][sequence_index]), False)
             note_events.append(get_note_events(outro_note, 0))
 
