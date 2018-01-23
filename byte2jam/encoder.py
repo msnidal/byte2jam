@@ -1,7 +1,4 @@
-import midi
-import constants
-from schema import Note, ByteJamSchema
-from utils import get_nibble_note_data
+from . import constants, schema, utils
 
 def encode(data):
     """
@@ -10,8 +7,8 @@ def encode(data):
     """
     # need something to work with
     try:
-        values = bytearray(data)
-    except e:
+        values = bytes(data)
+    except TypeError:
         return None
 
     # get header data from first byte of values
@@ -21,27 +18,26 @@ def encode(data):
 
     initial_note = constants.INITIAL_NOTE[initial_note_index]
     mode = constants.MODES[modal_index]
-
     content_notes = []
 
     # get note data from each succeeding byte
     for byte in values[1:]:
         content_notes.extend([
-            Note(*get_nibble_note_data(byte >> 4, initial_note, mode)),
-            Note(*get_nibble_note_data(byte & 15, initial_note, mode))
+            schema.Note(*utils.get_nibble_note_data(byte >> 4, initial_note, mode)),
+            schema.Note(*utils.get_nibble_note_data(byte & 15, initial_note, mode))
             ])
 
     # create note schema from extracted byte data
-    schema = ByteJamSchema(initial_note_index, modal_index, seq_index, content_notes)
-    return schema.get_midi_pattern()
+    jam_schema = schema.ByteJamSchema(initial_note_index, modal_index, seq_index, content_notes)
+    return jam_schema.get_staff()
 
 def decode(pattern):
     """ Decodes values from a well formed MIDI pattern. Returns a bytearray bit string. """
     # extract the padding data
     notes = []
-    for event in pattern[0]:
-        if type(event) is midi.events.NoteOffEvent:
-            notes.append(Note(event.pitch, event.tick == constants.HALF_NOTE_LENGTH))
+    for note in pattern[0]:
+        notes.append(schema.Note(note.written_pitch.number,
+            note.written_duration.pair == (1,4)))
 
     # get key
     initial_note = notes[0]
@@ -59,5 +55,5 @@ def decode(pattern):
         # One of the flag criteria do not match the schema layout, invalid sequence
         return None
 
-    schema = ByteJamSchema(initial_note_index, modal_index, sequence_index, notes[4:-4])
-    return schema.get_bytearray(scale)
+    jam_schema = schema.ByteJamSchema(initial_note_index, modal_index, sequence_index, notes[4:-4], scale=scale)
+    return bytes(jam_schema)

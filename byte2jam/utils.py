@@ -1,5 +1,5 @@
-import midi
-import constants
+import abjad
+from . import constants
 
 def map_note(initial_note, mode, relative_position):
     """ Maps a MIDI note from an initial value, a mode, and a displacement on that mode """
@@ -11,13 +11,9 @@ def map_note(initial_note, mode, relative_position):
 
 def get_note_events(note, start_delay):
     """ Gets a tuple of MIDI events to start and stop playing a note for a pitch """
-    note_start = midi.NoteOnEvent(tick=start_delay, velocity=constants.NOTE_VELOCITY,
-            pitch=note.pitch)
+    note_tuple = (1, 4) if note.is_half_note else (1, 8)
 
-    tick_value = constants.HALF_NOTE_LENGTH if note.is_half_note else constants.FULL_NOTE_LENGTH
-    note_end = midi.NoteOffEvent(tick=tick_value, pitch=note.pitch)
-
-    return note_start, note_end
+    return abjad.Note(note.pitch, note_tuple)
 
 def get_nibble_note_data(nibble, initial_note, mode):
     """ Get a note data in the sequence from a nibble (half-byte) """

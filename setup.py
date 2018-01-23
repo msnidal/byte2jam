@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name="byte2jam",
@@ -7,9 +7,8 @@ setup(
     author="Mark Snidal",
     author_email="mark.snidal@gmail.com",
     license="LGPL",
-    install_requires=[
-        'python-midi',
-    ],
-    test_suite='tests',
-    packages=find_packages()
+    install_requires=['abjad'],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
+    packages=['byte2jam']
 )

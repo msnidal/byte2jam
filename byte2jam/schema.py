@@ -1,6 +1,5 @@
-import midi
-import constants
-from utils import map_note, get_note_events
+import abjad
+from . import constants, utils
 
 class ByteJamSchema:
     """
@@ -8,13 +7,14 @@ class ByteJamSchema:
     to MIDI. While currently functional it can be extended in the future with additional
     constructors and encoders to handle arbitrary schemas.
     """
-    def __init__(self, initial_note_index, modal_index, sequence, content_notes):
+    def __init__(self, initial_note_index, modal_index, sequence, content_notes, scale=None):
         self.initial_note_index = initial_note_index
         self.modal_index = modal_index
         self.sequence = sequence
         self.content_notes = content_notes
+        self.scale = scale
 
-    def get_bytearray(self, scale):
+    def __bytes__(self):
         """
         Returns a byte string from the schema class, ordered according to the
         conventions defined in constants.py
@@ -25,56 +25,51 @@ class ByteJamSchema:
         li.append(header)
 
         number_of_bytes = len(self.content_notes) // 2 + len(self.content_notes) % 2
-        for byte_index in xrange(number_of_bytes):
-            byte = (self.content_notes[2 * byte_index].modal_position(scale) << 5) | \
+
+        for byte_index in range(number_of_bytes):
+            byte = (self.content_notes[2 * byte_index].modal_position(self.scale) << 5) | \
                     (self.content_notes[2 * byte_index].is_half_note << 4)
             if (2 * byte_index + 1) < len(self.content_notes):
-                byte |= ((self.content_notes[2 * byte_index + 1].modal_position(scale) << 1) | \
+                byte |= ((self.content_notes[2 * byte_index + 1].modal_position(self.scale) << 1) | \
                         (self.content_notes[2 * byte_index + 1].is_half_note))
 
             li.append(byte)
 
-        return bytearray(li)
+        return bytes(li)
 
-    def get_midi_pattern(self):
+    def get_staff(self):
         """
         Returns a MIDI pattern according to this object's schema. See constants.py
         for sequences.
         """
-        # create midi file
-        pattern = midi.Pattern()
-        track = midi.Track()
-        pattern.append(track)
 
-        note_events = []
+        # create midi file
+        staff = abjad.Staff()
+        voice = abjad.Voice()
+        staff.append(voice)
 
         # insert intro pad sequence from seq_index
-        for sequence_index in xrange(4):
-            intro_note = Note(map_note(
+        for sequence_index in range(4):
+            intro_note = Note(utils.map_note(
                 constants.INITIAL_NOTE[self.initial_note_index],
                 constants.MODES[self.modal_index],
                 constants.INTRO_SEQUENCE[self.sequence][sequence_index]), False)
-            note_events.append(get_note_events(intro_note, 0))
+            voice.append(utils.get_note_events(intro_note, 0))
 
         # populate content
         for note in self.content_notes:
-            note_events.append(get_note_events(note, 0))
+            voice.append(utils.get_note_events(note, 0))
 
         # insert terminal pad sequence from seq_index
-        for sequence_index in xrange(4):
-            outro_note = Note(map_note(
+        for sequence_index in range(4):
+            outro_note = Note(utils.map_note(
                 constants.INITIAL_NOTE[self.initial_note_index],
                 constants.MODES[self.modal_index],
                 constants.TERMINAL_SEQUENCE[self.sequence][sequence_index]), False)
-            note_events.append(get_note_events(outro_note, 0))
+            voice.append(utils.get_note_events(outro_note, 0))
 
-        # append everything in note_events
-        for on, off in note_events:
-            track.append(on)
-            track.append(off)
-
-        track.append(midi.EndOfTrackEvent(tick=0))
-        return pattern
+        # append everything in staff
+        return staff
 
 class Note:
     """
