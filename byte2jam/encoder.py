@@ -1,4 +1,4 @@
-from . import constants, schema, utils
+from byte2jam import constants, schema, utils
 
 def encode(data):
     """

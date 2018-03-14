@@ -1,5 +1,5 @@
 import abjad
-from . import constants, utils
+from byte2jam import constants, utils
 
 class ByteJamSchema:
     """

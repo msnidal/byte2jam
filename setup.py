@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="byte2jam",
@@ -10,5 +10,5 @@ setup(
     install_requires=['abjad'],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
-    packages=['byte2jam']
+    packages=find_packages()
 )

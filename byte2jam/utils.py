@@ -1,5 +1,5 @@
 import abjad
-from . import constants
+from byte2jam import constants
 
 def map_note(initial_note, mode, relative_position):
     """ Maps a MIDI note from an initial value, a mode, and a displacement on that mode """
