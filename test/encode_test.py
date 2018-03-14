@@ -1,7 +1,7 @@
 import pytest
-from byte2jam import encoder
+from byte2jam import schema
 
 def test_encode_decode():
     test_bytes = bytes(b'I\'m feeling hungry!')
-    encoded = encoder.encode(test_bytes)
-    assert encoder.decode(encoded) == test_bytes
+    encoded = schema.ByteJamSchema.from_bytes(test_bytes)
+    assert bytes(encoded) == test_bytes
