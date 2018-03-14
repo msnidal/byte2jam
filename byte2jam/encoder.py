@@ -1,3 +1,4 @@
+import abjad
 from byte2jam import constants, schema, utils
 
 def encode(data):
@@ -29,10 +30,20 @@ def encode(data):
 
     # create note schema from extracted byte data
     jam_schema = schema.ByteJamSchema(initial_note_index, modal_index, seq_index, content_notes)
-    return jam_schema.get_staff()
+    staff = jam_schema.get_staff()
 
-def decode(pattern):
+    lilypond_file = abjad.LilyPondFile.new(staff)
+    lilypond_file.header_block.title = abjad.Markup(str(data))
+    lilypond_file.header_block.composer = abjad.Markup("byte2jam")
+    lilypond_file.layout_block.indent = 0
+    lilypond_file.layout_block.left_margin = 15
+
+    return lilypond_file
+
+def decode(lilypond_file):
     """ Decodes values from a well formed MIDI pattern. Returns a bytearray bit string. """
+    pattern = lilypond_file['score'].items[0]
+
     # extract the padding data
     notes = []
     for note in pattern[0]:
