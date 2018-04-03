@@ -7,9 +7,8 @@ setup(
     author="Mark Snidal",
     author_email="mark.snidal@gmail.com",
     license="LGPL",
-    install_requires=[
-        'python-midi',
-    ],
-    test_suite='tests',
+    install_requires=['abjad'],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
     packages=find_packages()
 )

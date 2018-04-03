@@ -1,15 +1,5 @@
-from midi import *
-
-# note lengths, velocity according to midi library
-HALF_NOTE_LENGTH = 100
-FULL_NOTE_LENGTH = HALF_NOTE_LENGTH * 2
-NOTE_VELOCITY = 20
-
 # sequence sets in powers of 2
-INITIAL_NOTE = (
-    C_4, Cs_4, D_4, F_4,
-    Fs_4, G_4, A_4, B_4
-)
+INITIAL_NOTE = (0, 2, 4, 5, 6, 7, 9, 11)
 
 INTRO_SEQUENCE = (
     (0, 1, 3, 6),
